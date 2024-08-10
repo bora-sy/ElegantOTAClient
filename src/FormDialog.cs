@@ -35,11 +35,6 @@ namespace ElegantOTAClient
 
         }
 
-        private async Task Update()
-        {
-
-        }
-
         private byte[] GetMD5Hash()
         {
             using (var md5 = MD5.Create())
@@ -56,7 +51,7 @@ namespace ElegantOTAClient
             CurrentHash = GetMD5Hash();
         }
 
-        private void buttonUpdate_Click(object sender, EventArgs e)
+        private async void buttonUpdate_Click(object sender, EventArgs e)
         {
             if(CurrentHash == LastUploadedHash && (CurrentHash != null))
             {
@@ -65,7 +60,23 @@ namespace ElegantOTAClient
 
             buttonUpdate.Enabled = false;
 
-            Task.Run(Update);
+            _ = Task.Run(async delegate() {
+
+                buttonUpdate.Visible = false;
+                progressBar.Visible = true;
+                labelProgress.Visible = true;
+
+                ElegantOTAHandler.SetConfig(config);
+
+                var str = File.OpenRead(config.FirmwarePath);
+
+                long len = str.Length;
+                progressBar.Maximum = (int)len;
+                progressBar.Value = 0;
+
+                await ElegantOTAHandler.UpdateAsync(str, GetMD5Hash(), x => labelProgress.Text = x.ToString(), x => MessageBox.Show("ErrorCB: " + x));
+
+            });
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace ElegantOTAClient
         }
 
 
-        public static async Task<bool> UpdateAsync(FileStream stream, byte[] MD5Hash, Action<ulong> ProgressCB, Action<string> ErrorCB)
+        public static async Task<bool> UpdateAsync(FileStream stream, byte[] MD5Hash, Action<long> ProgressCB, Action<string> ErrorCB)
         {
             if(!await StartAsync(MD5Hash))
             {
@@ -35,7 +36,7 @@ namespace ElegantOTAClient
             return true;
         }
 
-        private static async Task<bool> TransferAsync(FileStream stream, Action<ulong> ProgressCB)
+        private static async Task<bool> TransferAsync(FileStream stream, Action<long> ProgressCB)
         {
             HttpMessageHandler handler = config.Username == null ? new HttpClientHandler() : new HttpClientHandler()
             {
@@ -47,6 +48,8 @@ namespace ElegantOTAClient
 
             HttpClient client = new HttpClient(handler);
 
+            bool progressLoop = true;
+
             try
             {
                 client = new HttpClient(handler);
@@ -55,20 +58,50 @@ namespace ElegantOTAClient
 
                 string url = $"http://{config.EP.Address.MapToIPv4()}:{config.EP.Port}/ota/upload";
 
-                await client.PostAsync(url, content);
+                _ = Task.Run(async delegate ()
+                {
+                    try
+                    {
+                        long lastPos = 0;
 
-                
+                        while (progressLoop && stream != null && stream.Position != stream.Length)
+                        {
+                            if (stream.Position != lastPos)
+                            {
+                                lastPos = stream.Position;
+                                ProgressCB(lastPos);
+                            }
+
+                            await Task.Delay(50);
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show("Progress Loop Failed\nEx: " + ex.Message);
+                    }
+                });
+
+                var resp = await client.PostAsync(url, content);
+
+
+                if (!resp.IsSuccessStatusCode) throw new Exception($"Unsuccessful Transfer (Status Code: {resp.StatusCode}) [Content: {await resp.Content.ReadAsStringAsync()}]");
+
+                return true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occured while starting file transfer..\nError: " + ex.Message);
+                MessageBox.Show("An error occured while transferring file..\nError: " + ex.Message);
                 return false;
             }
             finally
             {
+
+                progressLoop = false;
+
                 if (handler != null) handler.Dispose();
                 if (client != null) client.Dispose();
                 if (content != null) content.Dispose();
+
             }
         }
 
@@ -98,7 +131,7 @@ namespace ElegantOTAClient
                 {
                     return true;
                 }
-                else throw new Exception($"Response code is not 200 (Response Code: {res.StatusCode}) [Response: {res.Content.ReadAsStringAsync()}]");
+                else throw new Exception($"Response code is not 200 (Response Code: {res.StatusCode}) [Response: {await res.Content.ReadAsStringAsync()}]");
             }
             catch(Exception ex)
             {

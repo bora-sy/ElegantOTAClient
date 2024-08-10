@@ -5,6 +5,7 @@ namespace ElegantOTAClient
         [STAThread]
         static void Main()
         {
+            Control.CheckForIllegalCrossThreadCalls = false;
             ApplicationConfiguration.Initialize();
             Application.Run(new FormConfig());
         }

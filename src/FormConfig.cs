@@ -110,7 +110,6 @@ namespace ElegantOTAClient
 
             File.WriteAllBytes(path, buf);
 
-            MessageBox.Show($"Config Saved Successfully\n({path})");
         }
 
         private void buttonLoadConfig_Click(object sender, EventArgs e)
@@ -132,8 +131,6 @@ namespace ElegantOTAClient
             OTAConfig cfg = OTAConfig.Deserialize(buf);
 
             SetConfig(cfg);
-
-            MessageBox.Show($"Config Loaded Successfully\n({path})");
 
         }
 
