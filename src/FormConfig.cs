@@ -144,5 +144,17 @@ namespace ElegantOTAClient
             this.Show();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Task.Run(async delegate ()
+            {
+                ulong c = 0;
+
+                while(true)
+                {
+                    button1.Text = c++.ToString();
+                }
+            });
+        }
     }
 }

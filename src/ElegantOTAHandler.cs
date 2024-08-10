@@ -19,24 +19,26 @@ namespace ElegantOTAClient
         }
 
 
-        public static async Task<bool> UpdateAsync(FileStream stream, byte[] MD5Hash, Action<long> ProgressCB, Action<string> ErrorCB)
+        public static async Task<bool> UpdateAsync(byte[] buf, byte[] MD5Hash, Action<long> ProgressCB, Action<string> ErrorCB)
         {
+            
             if(!await StartAsync(MD5Hash))
             {
                 ErrorCB("An error occured while starting file transfer");
                 return false;
             }
 
-            if(!await TransferAsync(stream, ProgressCB))
+            if(!await TransferAsync(buf, ProgressCB))
             {
                 ErrorCB("An error occured while transferring file");
                 return false;
             }
+            
 
             return true;
         }
 
-        private static async Task<bool> TransferAsync(FileStream stream, Action<long> ProgressCB)
+        private static async Task<bool> TransferAsync(byte[] buf, Action<long> ProgressCB)
         {
             HttpMessageHandler handler = config.Username == null ? new HttpClientHandler() : new HttpClientHandler()
             {
@@ -52,41 +54,44 @@ namespace ElegantOTAClient
 
             try
             {
-                client = new HttpClient(handler);
-
-                content.Add(new StreamContent(stream), "file", Path.GetFileName(config.FirmwarePath));
-
-                string url = $"http://{config.EP.Address.MapToIPv4()}:{config.EP.Port}/ota/upload";
-
-                _ = Task.Run(async delegate ()
+                using (MemoryStream stream = new MemoryStream(buf))
                 {
-                    try
-                    {
-                        long lastPos = 0;
+                    client = new HttpClient(handler);
 
-                        while (progressLoop && stream != null && stream.Position != stream.Length)
+                    content.Add(new StreamContent(stream), "file", Path.GetFileName(config.FirmwarePath));
+
+                    string url = $"http://{config.EP.Address.MapToIPv4()}:{config.EP.Port}/ota/upload";
+
+                    _ = Task.Run(async delegate ()
+                    {
+                        try
                         {
-                            if (stream.Position != lastPos)
+                            long lastPos = 0;
+
+                            while (progressLoop && stream != null)
                             {
-                                lastPos = stream.Position;
-                                ProgressCB(lastPos);
+                                if (stream.Position != lastPos)
+                                {
+                                    lastPos = stream.Position;
+                                    ProgressCB(lastPos);
+                                }
+
+                                await Task.Delay(10);
                             }
-
-                            await Task.Delay(50);
                         }
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show("Progress Loop Failed\nEx: " + ex.Message);
-                    }
-                });
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Progress Loop Failed\nEx: " + ex.Message);
+                        }
+                    });
 
-                var resp = await client.PostAsync(url, content);
+                    var resp = await client.PostAsync(url, content);
 
 
-                if (!resp.IsSuccessStatusCode) throw new Exception($"Unsuccessful Transfer (Status Code: {resp.StatusCode}) [Content: {await resp.Content.ReadAsStringAsync()}]");
+                    if (!resp.IsSuccessStatusCode) throw new Exception($"Unsuccessful Transfer (Status Code: {resp.StatusCode}) [Content: {await resp.Content.ReadAsStringAsync()}]");
 
-                return true;
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -114,7 +119,6 @@ namespace ElegantOTAClient
             };
 
             HttpClient client = new HttpClient(handler);
-
             try
             {
 

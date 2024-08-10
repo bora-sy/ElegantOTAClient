@@ -42,6 +42,7 @@
             buttonLoadConfig = new Button();
             buttonSaveConfig = new Button();
             buttonLaunch = new Button();
+            button1 = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -76,6 +77,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(button1);
             groupBox1.Controls.Add(textBoxPassword);
             groupBox1.Controls.Add(checkBoxDigestAuth);
             groupBox1.Controls.Add(label4);
@@ -184,6 +186,16 @@
             buttonLaunch.UseVisualStyleBackColor = true;
             buttonLaunch.Click += buttonLaunch_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(303, 67);
+            button1.Name = "button1";
+            button1.Size = new Size(112, 34);
+            button1.TabIndex = 10;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // FormConfig
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -222,5 +234,6 @@
         private Button buttonLoadConfig;
         private Button buttonSaveConfig;
         private Button buttonLaunch;
+        private Button button1;
     }
 }

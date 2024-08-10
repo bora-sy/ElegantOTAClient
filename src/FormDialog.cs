@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ElegantOTAClient
 {
@@ -51,7 +52,7 @@ namespace ElegantOTAClient
             CurrentHash = GetMD5Hash();
         }
 
-        private async void buttonUpdate_Click(object sender, EventArgs e)
+        private void buttonUpdate_Click(object sender, EventArgs e)
         {
             if(CurrentHash == LastUploadedHash && (CurrentHash != null))
             {
@@ -60,23 +61,44 @@ namespace ElegantOTAClient
 
             buttonUpdate.Enabled = false;
 
-            _ = Task.Run(async delegate() {
+             Task.Run(async delegate() {
 
-                buttonUpdate.Visible = false;
-                progressBar.Visible = true;
-                labelProgress.Visible = true;
+                try
+                {
+                     this.BeginInvoke(new MethodInvoker(delegate {
+                         buttonUpdate.Visible = false;
+                         progressBar.Visible = true;
+                         labelProgress.Visible = true;
+                     }));
 
-                ElegantOTAHandler.SetConfig(config);
 
-                var str = File.OpenRead(config.FirmwarePath);
+                    ElegantOTAHandler.SetConfig(config);
 
-                long len = str.Length;
-                progressBar.Maximum = (int)len;
-                progressBar.Value = 0;
+                    byte[] buf = File.ReadAllBytes(config.FirmwarePath);
 
-                await ElegantOTAHandler.UpdateAsync(str, GetMD5Hash(), x => labelProgress.Text = x.ToString(), x => MessageBox.Show("ErrorCB: " + x));
+                     long len = buf.Length;
+                    progressBar.Maximum = (int)len;
+                    progressBar.Value = 0;
 
+                    await ElegantOTAHandler.UpdateAsync(buf, GetMD5Hash(), x => this.BeginInvoke(new MethodInvoker(delegate { progressBar.Value = (int)x; labelProgress.Text = x.ToString(); })), x => MessageBox.Show("ErrorCB: " + x));
+
+                     this.BeginInvoke(new MethodInvoker(delegate {
+                     buttonUpdate.Visible = true;
+                     progressBar.Visible = false;
+                     labelProgress.Visible = false;
+                     buttonUpdate.Enabled = true;
+
+                     }));
+
+                     MessageBox.Show("UPDATE COMPT");
+                }
+                catch(Exception ex)
+                {
+
+                }
             });
+
+
         }
     }
 }
