@@ -28,23 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
+            buttonUpdate = new Button();
             fileSystemWatcher1 = new FileSystemWatcher();
             progressBar = new ProgressBar();
             labelProgress = new Label();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             SuspendLayout();
             // 
-            // button1
+            // buttonUpdate
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            button1.Font = new Font("Tahoma", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Location = new Point(12, 12);
-            button1.Name = "button1";
-            button1.Size = new Size(317, 62);
-            button1.TabIndex = 0;
-            button1.Text = "Update";
-            button1.UseVisualStyleBackColor = true;
+            buttonUpdate.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            buttonUpdate.Font = new Font("Tahoma", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            buttonUpdate.Location = new Point(12, 12);
+            buttonUpdate.Name = "buttonUpdate";
+            buttonUpdate.Size = new Size(317, 62);
+            buttonUpdate.TabIndex = 0;
+            buttonUpdate.Text = "Update";
+            buttonUpdate.UseVisualStyleBackColor = true;
+            buttonUpdate.Click += buttonUpdate_Click;
             // 
             // fileSystemWatcher1
             // 
@@ -80,7 +81,8 @@
             ClientSize = new Size(341, 90);
             Controls.Add(labelProgress);
             Controls.Add(progressBar);
-            Controls.Add(button1);
+            Controls.Add(buttonUpdate);
+            KeyPreview = true;
             Name = "FormDialog";
             Text = "FormDialog";
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
@@ -89,7 +91,7 @@
 
         #endregion
 
-        private Button button1;
+        private Button buttonUpdate;
         private FileSystemWatcher fileSystemWatcher1;
         private ProgressBar progressBar;
         private Label labelProgress;

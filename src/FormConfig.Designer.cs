@@ -32,14 +32,13 @@
             label1 = new Label();
             checkBoxDigestAuth = new CheckBox();
             groupBox1 = new GroupBox();
-            label2 = new Label();
-            textBoxUsername = new TextBox();
+            textBoxPassword = new TextBox();
             label4 = new Label();
-            textBox3 = new TextBox();
+            textBoxUsername = new TextBox();
+            label2 = new Label();
             textBoxFirmwarePath = new TextBox();
             buttonOFD = new Button();
             label3 = new Label();
-            textBoxPassword = new TextBox();
             buttonLoadConfig = new Button();
             buttonSaveConfig = new Button();
             buttonLaunch = new Button();
@@ -73,11 +72,11 @@
             checkBoxDigestAuth.TabIndex = 2;
             checkBoxDigestAuth.Text = "Use Digest Authentication";
             checkBoxDigestAuth.UseVisualStyleBackColor = true;
+            checkBoxDigestAuth.CheckedChanged += checkBoxDigestAuth_CheckedChanged;
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(textBoxPassword);
-            groupBox1.Controls.Add(textBox3);
             groupBox1.Controls.Add(checkBoxDigestAuth);
             groupBox1.Controls.Add(label4);
             groupBox1.Controls.Add(textBoxUsername);
@@ -88,23 +87,16 @@
             groupBox1.TabIndex = 3;
             groupBox1.TabStop = false;
             // 
-            // label2
+            // textBoxPassword
             // 
-            label2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            label2.Location = new Point(6, 84);
-            label2.Name = "label2";
-            label2.Size = new Size(381, 38);
-            label2.TabIndex = 4;
-            label2.Text = "Username";
-            label2.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // textBoxUsername
-            // 
-            textBoxUsername.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            textBoxUsername.Location = new Point(29, 125);
-            textBoxUsername.Name = "textBoxUsername";
-            textBoxUsername.Size = new Size(335, 31);
-            textBoxUsername.TabIndex = 5;
+            textBoxPassword.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBoxPassword.Enabled = false;
+            textBoxPassword.Location = new Point(29, 211);
+            textBoxPassword.Name = "textBoxPassword";
+            textBoxPassword.PasswordChar = '*';
+            textBoxPassword.Size = new Size(335, 31);
+            textBoxPassword.TabIndex = 9;
+            textBoxPassword.TextAlign = HorizontalAlignment.Center;
             // 
             // label4
             // 
@@ -116,13 +108,25 @@
             label4.Text = "Password";
             label4.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // textBox3
+            // textBoxUsername
             // 
-            textBox3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            textBox3.Location = new Point(29, 211);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(76, 31);
-            textBox3.TabIndex = 8;
+            textBoxUsername.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            textBoxUsername.Enabled = false;
+            textBoxUsername.Location = new Point(29, 125);
+            textBoxUsername.Name = "textBoxUsername";
+            textBoxUsername.Size = new Size(335, 31);
+            textBoxUsername.TabIndex = 5;
+            textBoxUsername.TextAlign = HorizontalAlignment.Center;
+            // 
+            // label2
+            // 
+            label2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label2.Location = new Point(6, 84);
+            label2.Name = "label2";
+            label2.Size = new Size(381, 38);
+            label2.TabIndex = 4;
+            label2.Text = "Username";
+            label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // textBoxFirmwarePath
             // 
@@ -139,6 +143,7 @@
             buttonOFD.TabIndex = 5;
             buttonOFD.Text = "...";
             buttonOFD.UseVisualStyleBackColor = true;
+            buttonOFD.Click += buttonOFD_Click;
             // 
             // label3
             // 
@@ -149,14 +154,6 @@
             label3.TabIndex = 6;
             label3.Text = "Firmware Path:";
             // 
-            // textBoxPassword
-            // 
-            textBoxPassword.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            textBoxPassword.Location = new Point(29, 211);
-            textBoxPassword.Name = "textBoxPassword";
-            textBoxPassword.Size = new Size(335, 31);
-            textBoxPassword.TabIndex = 9;
-            // 
             // buttonLoadConfig
             // 
             buttonLoadConfig.Location = new Point(411, 49);
@@ -165,6 +162,7 @@
             buttonLoadConfig.TabIndex = 7;
             buttonLoadConfig.Text = "Load Config";
             buttonLoadConfig.UseVisualStyleBackColor = true;
+            buttonLoadConfig.Click += buttonLoadConfig_Click;
             // 
             // buttonSaveConfig
             // 
@@ -174,6 +172,7 @@
             buttonSaveConfig.TabIndex = 8;
             buttonSaveConfig.Text = "Save Config";
             buttonSaveConfig.UseVisualStyleBackColor = true;
+            buttonSaveConfig.Click += buttonSaveConfig_Click;
             // 
             // buttonLaunch
             // 
@@ -183,6 +182,7 @@
             buttonLaunch.TabIndex = 9;
             buttonLaunch.Text = "Launch";
             buttonLaunch.UseVisualStyleBackColor = true;
+            buttonLaunch.Click += buttonLaunch_Click;
             // 
             // FormConfig
             // 
@@ -215,7 +215,6 @@
         private Label label4;
         private TextBox textBoxUsername;
         private Label label2;
-        private TextBox textBox3;
         private TextBox textBoxFirmwarePath;
         private Button buttonOFD;
         private Label label3;

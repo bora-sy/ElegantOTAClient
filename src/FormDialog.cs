@@ -12,9 +12,18 @@ namespace ElegantOTAClient
 {
     public partial class FormDialog : Form
     {
-        public FormDialog()
+        private OTAConfig config;
+
+        public FormDialog(OTAConfig cfg)
         {
             InitializeComponent();
+
+            config = cfg;
+        }
+
+        private void buttonUpdate_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
