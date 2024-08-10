@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             buttonUpdate = new Button();
-            fileSystemWatcher1 = new FileSystemWatcher();
             progressBar = new ProgressBar();
             labelProgress = new Label();
+            fileSystemWatcher1 = new FileSystemWatcher();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             SuspendLayout();
             // 
@@ -46,12 +46,6 @@
             buttonUpdate.Text = "Update";
             buttonUpdate.UseVisualStyleBackColor = true;
             buttonUpdate.Click += buttonUpdate_Click;
-            // 
-            // fileSystemWatcher1
-            // 
-            fileSystemWatcher1.EnableRaisingEvents = true;
-            fileSystemWatcher1.NotifyFilter = NotifyFilters.LastAccess;
-            fileSystemWatcher1.SynchronizingObject = this;
             // 
             // progressBar
             // 
@@ -74,6 +68,11 @@
             labelProgress.TextAlign = ContentAlignment.MiddleLeft;
             labelProgress.Visible = false;
             // 
+            // fileSystemWatcher1
+            // 
+            fileSystemWatcher1.EnableRaisingEvents = true;
+            fileSystemWatcher1.SynchronizingObject = this;
+            // 
             // FormDialog
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -92,8 +91,8 @@
         #endregion
 
         private Button buttonUpdate;
-        private FileSystemWatcher fileSystemWatcher1;
         private ProgressBar progressBar;
         private Label labelProgress;
+        private FileSystemWatcher fileSystemWatcher1;
     }
 }
