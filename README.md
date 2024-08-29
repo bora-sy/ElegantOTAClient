@@ -4,7 +4,9 @@ ElegantOTAClient is an application made with C# that automatically uploads bin f
 ## Instructions
 
 1- Clone this repository to your local machine.
+
 2- Open the [Solution File](https://github.com/bora-sy/ElegantOTAClient/blob/main/src/ElegantOTAClient.sln) in Visual Studio.
+
 3- Build & Run the application.
 
 ## Preview
